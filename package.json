@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "date-utils": "^1.2.21",
+    "mysql": "^2.18.1",
+    "puppeteer": "^13.6.0"
+  }
+}
