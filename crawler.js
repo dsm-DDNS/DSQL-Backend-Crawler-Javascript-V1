@@ -24,7 +24,8 @@ async function InsertPostToDBIfIsNotInserted(title, url, date) {
         if (err) {
             console.log(err);
         }
-        isNotStored = r[0];
+        if (!r[0]) isNotStored = false
+        else isNotStored = true
     });
     if (!isNotStored) {
         console.log("ALREADY_STORED: ", title)
@@ -33,7 +34,6 @@ async function InsertPostToDBIfIsNotInserted(title, url, date) {
 
     console.log("[NEW] Data Input: ", title)
 
-    return
     const insertDataQuery = "INSERT INTO `POST` (`title`,`url`, `create_at`) VALUES ('"+title+"', '" + url +"', '" + date +"');";
 
     connection.query(insertDataQuery, function (err, results, fields) {
