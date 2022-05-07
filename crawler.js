@@ -3,6 +3,8 @@ const puppeteer = require("puppeteer")
 const cheerio = require("cheerio");
 const BASE_URL = process.env.BLOG_URL
 const mysql = require('mysql');
+const childProcess = require('child_process');
+const util = require('util');
 const conn = {
     host: process.env.HOST,
     port: '3306',
@@ -13,38 +15,43 @@ const conn = {
 
 async function InsertPostToDBIfIsNotInserted(title, url, date) {
     const connection = mysql.createConnection(conn);
-    connection.connect();
+    // await connection.connect();
 
     title = title.replaceAll("'", " ").replaceAll('"', " ")
 
     const findByTitleQuery = "SELECT * FROM POST WHERE title = '" + title + "'";
 
-    let isNotStored
-    connection.query(findByTitleQuery, function (err, r, fields) {
+    await connection.query(findByTitleQuery, async function (err, r, fields) {
         if (err) {
             console.log(err);
         }
-        if (!r[0]) isNotStored = false
-        else isNotStored = true
-    });
-    if (!isNotStored) {
-        console.log("ALREADY_STORED: ", title)
-        return
-    }
 
-    console.log("[NEW] Data Input: ", title)
+        if (!r[0]) {
+            console.log("Insert: ", !r[0], title)
+            // await console.log("[NEW] Data Input: ", title)
 
-    const insertDataQuery = "INSERT INTO `POST` (`title`,`url`, `create_at`) VALUES ('"+title+"', '" + url +"', '" + date +"');";
+            const insertDataQuery = "INSERT INTO `POST` (`title`,`url`, `create_at`) VALUES ('" + title + "', '" + url + "', '" + date + "');";
 
-    connection.query(insertDataQuery, function (err, results, fields) {
-        if (err) {
-            console.log(err);
+            await connection.query(insertDataQuery, function (err, results, fields) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+
+            await runFile(url.toString())
         }
     });
 
-    connection.end();
+
+    // await connection.end();
+}
+
+async function runFile(url) {
+    var data = util.format("./dsqlGo -t='%s'", url)
+    childProcess.execSync(data, {stdio: 'inherit'})
 
 }
+
 
 async function begin() {
     console.log("======== Starting Process ========")
@@ -78,6 +85,7 @@ async function begin() {
 
         if (!title) continue
         await InsertPostToDBIfIsNotInserted(title, url, date)
+
     }
 
     await browser.close()
