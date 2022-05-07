@@ -4,3 +4,9 @@ node_modules/.bin/
 .idea/
 
 node_modules/
+
+dsqlGo
+
+resources/
+
+.DS_Store
