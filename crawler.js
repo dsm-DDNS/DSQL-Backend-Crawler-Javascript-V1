@@ -48,7 +48,7 @@ async function InsertPostToDBIfIsNotInserted(title, url, date) {
 
 async function runFile(url) {
     var data = util.format("./dsqlGo -t='%s'", url)
-    childProcess.execSync(data, {stdio: 'inherit'})
+    childProcess.execSync(data, {stdio: "ignore"})
 
 }
 
@@ -94,7 +94,6 @@ async function begin() {
 
 async function roop() {
     await begin()
-    console.log("====== END PRECONSTRUCT ======")
     setInterval(function () {
         let newDate = new Date();
         let Htime = newDate.toFormat("HH24");
