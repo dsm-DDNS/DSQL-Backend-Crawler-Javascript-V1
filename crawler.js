@@ -84,18 +84,26 @@ async function begin() {
         const url = $(list).find(sel).attr("href")
         let date = $(list).find(dateSel).text()
         date = toStringByFormatting(new Date(date))
+        if (date == "NaN-0NaN-0NaN") {
+            
+            date = toStringByFormatting(new Date())
+        }
 
         if (!title) continue
-        await InsertPostToDBIfIsNotInserted(title, url, date)
 
+        await InsertPostToDBIfIsNotInserted(title, url, date)
+        
     }
 
+    
     await browser.close()
+
 }
 
 
 async function roop() {
-    await begin()
+    begin()
+    console.log("INITIAL WORK SUCCESS")
     setInterval(function () {
         let newDate = new Date();
         let Htime = newDate.toFormat("HH24");
