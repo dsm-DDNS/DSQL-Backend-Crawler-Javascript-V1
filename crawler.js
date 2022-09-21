@@ -13,9 +13,9 @@ const conn = {
     database: process.env.goDbName
 };
 
+const connection = mysql.createConnection(conn);
+
 async function InsertPostToDBIfIsNotInserted(title, url, date) {
-    const connection = mysql.createConnection(conn);
-    // await connection.connect();
 
     title = title.replaceAll("'", " ").replaceAll('"', " ")
 
@@ -40,7 +40,6 @@ async function InsertPostToDBIfIsNotInserted(title, url, date) {
 
             console.log(url);
             runFile(url.toString())
-            connection.close();
         }
     });
 
@@ -56,6 +55,7 @@ async function runFile(url) {
 
 
 async function begin() {
+
     console.log("======== Starting Process ========")
     const browser = await puppeteer.launch({
         headless: true
@@ -97,13 +97,12 @@ async function begin() {
 
     
     await browser.close()
-
 }
 
 
 async function roop() {
+    connection.connect()
     begin()
-    console.log("INITIAL WORK SUCCESS")
     setInterval(function () {
         let newDate = new Date();
         let Htime = newDate.toFormat("HH24");
@@ -138,4 +137,6 @@ function toStringByFormatting(source, delimiter = '-') {
 
 }
 
+
 roop()
+
