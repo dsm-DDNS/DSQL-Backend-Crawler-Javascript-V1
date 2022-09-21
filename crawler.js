@@ -8,9 +8,9 @@ const util = require('util');
 const conn = {
     host: process.env.HOST,
     port: '3306',
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    user: process.env.dbDefaultUsername,
+    password: process.env.dbDefaultPw,
+    database: process.env.goDbName
 };
 
 async function InsertPostToDBIfIsNotInserted(title, url, date) {
@@ -38,12 +38,14 @@ async function InsertPostToDBIfIsNotInserted(title, url, date) {
                 }
             });
 
-            await runFile(url.toString())
+            console.log(url);
+            runFile(url.toString())
+            connection.close();
         }
     });
 
 
-    // await connection.end();
+
 }
 
 async function runFile(url) {
