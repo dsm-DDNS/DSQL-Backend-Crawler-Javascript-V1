@@ -8,3 +8,5 @@ node_modules/
 /resources
 
 .DS_Store
+
+s3.yaml
